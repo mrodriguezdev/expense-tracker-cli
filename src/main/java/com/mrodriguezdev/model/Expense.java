@@ -13,8 +13,11 @@ public class Expense {
     public Expense() {
     }
 
-    public Expense(Long id) {
+    public Expense(Long id, String description, Double amount, LocalDateTime registeredAt) {
         this.id = id;
+        this.description = description;
+        this.amount = amount;
+        this.registeredAt = registeredAt;
     }
 
     public Long getId() {

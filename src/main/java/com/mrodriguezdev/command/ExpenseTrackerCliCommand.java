@@ -1,5 +1,6 @@
 package com.mrodriguezdev.command;
 
+import com.mrodriguezdev.command.sub.AddCommand;
 import picocli.CommandLine;
 
 @CommandLine.Command(
@@ -13,7 +14,11 @@ import picocli.CommandLine;
         header = "Expense Tracker CLI",
         optionListHeading = "%nOpciones disponibles:%n",
         footerHeading = "%nInformación Adicional:%n",
-        footer = "%nDesarrollado por mrodriguezdev - © 2024"
+        subcommandsRepeatable = true,
+        commandListHeading = "%nSubcomandos disponibles:%n",
+        subcommands = {
+                AddCommand.class
+        }
 )
 public class ExpenseTrackerCliCommand implements Runnable {
     public static void main(String[] args) {
