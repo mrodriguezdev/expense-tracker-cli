@@ -6,6 +6,7 @@ import com.mrodriguezdev.repository.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
     private final Repository<ExpenseWrapper> repository;
@@ -24,10 +25,33 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
         return expense;
     }
 
-
     @Override
     public void update(Long id, String description, Double amount) {
+        if (Objects.isNull(description) && (Objects.isNull(amount))) {
+            throw new RuntimeException(String.format(
+                    "Error al intentar actualizar el gasto con ID: %d%n. Debe proporcionar al menos una nueva descripción o un nuevo monto.",
+                    id));
+        }
 
+        ExpenseWrapper expenseWrapper = repository.loadExpenses();
+        List<Expense> expenses = expenseWrapper.getExpenses();
+
+        if (expenses == null || expenses.isEmpty()) {
+            throw new RuntimeException("No se encontraron gastos registrados para actualizar.");
+        }
+
+        Expense expense = expenses.stream()
+                .filter(ex -> ex.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(String.format(
+                        "No se encontró un gasto con ID: %d. Verifique que el ID sea correcto y que el gasto exista.",
+                        id)));
+
+        if (Objects.nonNull(description)) expense.setDescription(description);
+        if (Objects.nonNull(amount)) expense.setAmount(amount);
+        expense.setUpdatedAt(LocalDateTime.now());
+
+        repository.saveExpenses(expenseWrapper);
     }
 
     @Override

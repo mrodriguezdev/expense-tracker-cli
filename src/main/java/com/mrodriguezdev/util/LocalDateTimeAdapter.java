@@ -7,7 +7,6 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
@@ -27,7 +26,7 @@ public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
             return null;
         }
         try {
-            return LocalDateTime.parse(in.nextString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            return LocalDateTimeUtil.parse(in.nextString());
         } catch (DateTimeParseException e) {
             throw new JsonParseException("Failed to parse LocalDateTime", e);
         }
