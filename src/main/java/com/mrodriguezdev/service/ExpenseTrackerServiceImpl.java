@@ -44,7 +44,7 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
                 .filter(ex -> ex.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException(String.format(
-                        "No se encontró un gasto con ID: %d. Verifique que el ID sea correcto y que el gasto exista.",
+                        "No se encontró un gasto con ID: %d%n. Verifique que el ID sea correcto y que el gasto exista.",
                         id)));
 
         if (Objects.nonNull(description)) expense.setDescription(description);
@@ -56,7 +56,22 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
 
     @Override
     public void delete(Long id) {
+        ExpenseWrapper expenseWrapper = repository.loadExpenses();
+        List<Expense> expenses = expenseWrapper.getExpenses();
 
+        if (expenses == null || expenses.isEmpty()) {
+            throw new RuntimeException("No se encontraron gastos registrados para eliminar.");
+        }
+
+        Expense expense = expenses.stream()
+                .filter(ex -> ex.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(String.format(
+                        "No se encontró un gasto con ID: %d%n. Verifique que el ID sea correcto y que el gasto exista.",
+                        id)));
+
+        expenses.remove(expense);
+        repository.saveExpenses(expenseWrapper);
     }
 
     @Override

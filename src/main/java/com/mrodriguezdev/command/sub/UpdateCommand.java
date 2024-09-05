@@ -37,7 +37,7 @@ public class UpdateCommand implements Callable<Integer> {
     @Override
     public Integer call() {
         this.service.update(id, description, amount);
-        System.out.printf("[add] Gasto actualizado exitosamente (ID: %d)%n", id);
+        System.out.printf("[update] Gasto actualizado exitosamente (ID: %d)%n", id);
         return 0;
     }
 }
