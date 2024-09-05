@@ -11,14 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
     @Override
     public void write(JsonWriter out, LocalDateTime value) throws IOException {
         if (value == null) {
             out.nullValue();
         } else {
-            out.value(formatter.format(value));
+            out.value(LocalDateTimeUtil.format(value));
         }
     }
 
@@ -29,7 +27,7 @@ public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
             return null;
         }
         try {
-            return LocalDateTime.parse(in.nextString(), formatter);
+            return LocalDateTime.parse(in.nextString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         } catch (DateTimeParseException e) {
             throw new JsonParseException("Failed to parse LocalDateTime", e);
         }
