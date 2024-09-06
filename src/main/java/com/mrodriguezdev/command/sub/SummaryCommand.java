@@ -43,8 +43,8 @@ public class SummaryCommand implements Callable<Integer> {
             summary = this.service.summary();
             System.out.printf("[summary] Total de gastos $%.2f%n", summary);
         } else {
-            String monthDesc = Month.of(this.month).getDisplayName(TextStyle.FULL, Locale.forLanguageTag("es"));
             summary = this.service.summaryOf(month);
+            String monthDesc = Month.of(this.month).getDisplayName(TextStyle.FULL, Locale.forLanguageTag("es"));
             System.out.printf("[summary] Total de gastos para %s $%.2f%n", monthDesc, summary);
         }
         return 0;

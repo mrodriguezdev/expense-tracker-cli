@@ -88,13 +88,35 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
             throw new RuntimeException("No se encontraron gastos registrados para eliminar.");
         }
 
+        LocalDateTime currentDate = LocalDateTime.now();
+        int currentYear = currentDate.getYear();
+
         return expenses.stream()
+                .filter(item -> currentYear == item.getRegisteredAt().getYear())
                 .mapToDouble(Expense::getAmount)
                 .sum();
     }
 
     @Override
     public Double summaryOf(int month) {
-        return null;
+        ExpenseWrapper expenseWrapper = repository.loadExpenses();
+        List<Expense> expenses = expenseWrapper.getExpenses();
+
+        if (expenses == null || expenses.isEmpty()) {
+            throw new RuntimeException("No se encontraron gastos registrados para eliminar.");
+        }
+
+        if (month < 1 || month > 12) {
+            throw new RuntimeException("El mes debe estar entre 1 y 12.");
+        }
+
+        LocalDateTime currentDate = LocalDateTime.now();
+        int currentYear = currentDate.getYear();
+
+        return expenses.stream()
+                .filter(item -> currentYear == item.getRegisteredAt().getYear() &&
+                        month == item.getRegisteredAt().getMonthValue())
+                .mapToDouble(Expense::getAmount)
+                .sum();
     }
 }
