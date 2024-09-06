@@ -31,22 +31,31 @@ public class SummaryCommand implements Callable<Integer> {
     )
     private Integer month;
 
+    @CommandLine.Option(
+            names = {"--export", "--e"},
+            description = "Exporta el resumen de gastos a un archivo CSV en el directorio actual. Incluye todos los gastos registrados en el resumen y genera un archivo con un nombre basado en la fecha actual.",
+            defaultValue = "false"
+    )
+    private Boolean export;
+
     private ExpenseTrackerService service;
 
     private SummaryCommand() {
         this.service = ExpenseTrackerFactory.getService();
     }
+
     @Override
     public Integer call() {
         double summary;
         if (Objects.isNull(this.month)) {
-            summary = this.service.summary();
+            summary = this.service.summary(this.export);
             System.out.printf("[summary] Total de gastos $%.2f%n", summary);
         } else {
-            summary = this.service.summaryOf(month);
+            summary = this.service.summaryOf(this.export, this.month);
             String monthDesc = Month.of(this.month).getDisplayName(TextStyle.FULL, Locale.forLanguageTag("es"));
             System.out.printf("[summary] Total de gastos para %s $%.2f%n", monthDesc, summary);
         }
+        if (this.export) System.out.println("[summary] Gastos exportados exitosamente.");
         return 0;
     }
 }

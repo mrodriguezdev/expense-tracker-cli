@@ -87,7 +87,7 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
     }
 
     @Override
-    public Double summary() {
+    public Double summary(boolean export) {
         ExpenseWrapper expenseWrapper = repository.loadExpenses();
         List<Expense> expenses = expenseWrapper.getExpenses();
 
@@ -98,14 +98,21 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
         LocalDateTime currentDate = LocalDateTime.now();
         int currentYear = currentDate.getYear();
 
-        return expenses.stream()
-                .filter(item -> currentYear == item.getRegisteredAt().getYear())
+        List<Expense> filteredExpenses = expenses.stream()
+                .filter(item -> currentYear == item.getRegisteredAt().getYear()).toList();
+
+        if (export) {
+            expenseWrapper.setExpenses(filteredExpenses);
+            this.exportToCsv(expenseWrapper);
+        }
+
+        return filteredExpenses.stream()
                 .mapToDouble(Expense::getAmount)
                 .sum();
     }
 
     @Override
-    public Double summaryOf(int month) {
+    public Double summaryOf(boolean export, int month) {
         ExpenseWrapper expenseWrapper = repository.loadExpenses();
         List<Expense> expenses = expenseWrapper.getExpenses();
 
@@ -120,10 +127,21 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
         LocalDateTime currentDate = LocalDateTime.now();
         int currentYear = currentDate.getYear();
 
-        return expenses.stream()
+        List<Expense> filteredExpenses = expenses.stream()
                 .filter(item -> currentYear == item.getRegisteredAt().getYear() &&
-                        month == item.getRegisteredAt().getMonthValue())
+                        month == item.getRegisteredAt().getMonthValue()).toList();
+
+        if (export) {
+            expenseWrapper.setExpenses(filteredExpenses);
+            this.exportToCsv(expenseWrapper);
+        }
+
+        return filteredExpenses.stream()
                 .mapToDouble(Expense::getAmount)
                 .sum();
+    }
+
+    public void exportToCsv(ExpenseWrapper expenseWrapper) {
+        repository.exportToCsv(expenseWrapper);
     }
 }

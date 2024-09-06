@@ -1,8 +1,10 @@
 package com.mrodriguezdev.util;
 
 import com.mrodriguezdev.exception.FileUtilException;
+import com.mrodriguezdev.model.Expense;
 
 import java.io.*;
+import java.util.List;
 
 public class FileUtil {
 
@@ -57,5 +59,33 @@ public class FileUtil {
         }
 
         return jsonContent.toString();
+    }
+
+    public static void createCsv(String name, List<Expense> content) {
+        File file = new File(name);
+        File parentDir = file.getParentFile();
+
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                throw new FileUtilException("Error creando el directorio: " + parentDir.getPath());
+            }
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+            writer.println("ID,Description,Amount,Date,UpdatedDate");
+
+            for (Expense expense : content) {
+                String linea = String.format("\"%d\",\"%s\",\"%.2f\",\"%s\",\"%s\"",
+                        expense.getId(),
+                        expense.getDescription().replace("\"", "\"\""),
+                        expense.getAmount(),
+                        LocalDateTimeUtil.format(expense.getRegisteredAt()),
+                        expense.getUpdatedAt() == null ? null : LocalDateTimeUtil.format(expense.getUpdatedAt())
+                );
+                writer.println(linea);
+            }
+        } catch (IOException e) {
+            throw new FileUtilException("Error creando el archivo: " + name, e);
+        }
     }
 }
