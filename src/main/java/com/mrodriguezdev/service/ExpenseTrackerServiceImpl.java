@@ -76,7 +76,14 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
 
     @Override
     public List<Expense> list() {
-        return null;
+        ExpenseWrapper expenseWrapper = repository.loadExpenses();
+        List<Expense> expenses = expenseWrapper.getExpenses();
+
+        if (expenses == null || expenses.isEmpty()) {
+            throw new RuntimeException("No se encontraron gastos registrados para eliminar.");
+        }
+
+        return expenses;
     }
 
     @Override

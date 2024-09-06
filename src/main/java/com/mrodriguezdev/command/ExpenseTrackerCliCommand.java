@@ -1,9 +1,6 @@
 package com.mrodriguezdev.command;
 
-import com.mrodriguezdev.command.sub.AddCommand;
-import com.mrodriguezdev.command.sub.DeleteCommand;
-import com.mrodriguezdev.command.sub.SummaryCommand;
-import com.mrodriguezdev.command.sub.UpdateCommand;
+import com.mrodriguezdev.command.sub.*;
 import picocli.CommandLine;
 
 @CommandLine.Command(
@@ -23,7 +20,8 @@ import picocli.CommandLine;
                 AddCommand.class,
                 UpdateCommand.class,
                 DeleteCommand.class,
-                SummaryCommand.class
+                SummaryCommand.class,
+                ListCommand.class
         }
 )
 public class ExpenseTrackerCliCommand implements Runnable {
