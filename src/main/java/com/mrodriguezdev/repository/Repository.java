@@ -5,4 +5,5 @@ public interface Repository<T> {
     T loadExpenses();
     void saveExpenses(T t);
     void saveNewId(Long newId);
+    void exportToCsv(T t);
 }

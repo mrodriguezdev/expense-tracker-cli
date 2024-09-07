@@ -9,6 +9,6 @@ public interface ExpenseTrackerService {
     void update(Long id, String description, Double amount);
     void delete(Long id);
     List<Expense> list();
-    Double summary();
-    Double summaryOf(int month);
+    Double summary(boolean export);
+    Double summaryOf(boolean export, int month);
 }
