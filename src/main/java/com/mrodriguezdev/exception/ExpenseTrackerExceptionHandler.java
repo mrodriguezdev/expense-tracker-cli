@@ -10,6 +10,8 @@ public class ExpenseTrackerExceptionHandler implements CommandLine.IExecutionExc
             System.err.println("[ERROR] " + ex.getMessage());
         } else if (ex instanceof FileUtilException) {
             System.err.println("[ERROR] Error de archivo: " + ex.getMessage());
+        } else if (ex instanceof JsonUtilException) {
+            System.err.println("[ERROR] Error al procesar JSON: " + ex.getMessage());
         } else if (ex instanceof IncompleteExpenseUpdateException) {
             System.err.println("[ERROR] " + ex.getMessage());
         } else {
