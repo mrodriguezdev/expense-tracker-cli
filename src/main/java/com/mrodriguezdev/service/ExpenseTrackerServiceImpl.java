@@ -1,5 +1,8 @@
 package com.mrodriguezdev.service;
 
+import com.mrodriguezdev.exception.ExpenseNotFoundException;
+import com.mrodriguezdev.exception.IncompleteExpenseUpdateException;
+import com.mrodriguezdev.exception.InvalidMonthException;
 import com.mrodriguezdev.model.Expense;
 import com.mrodriguezdev.model.ExpenseWrapper;
 import com.mrodriguezdev.repository.Repository;
@@ -28,7 +31,7 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
     @Override
     public void update(Long id, String description, Double amount) {
         if (Objects.isNull(description) && (Objects.isNull(amount))) {
-            throw new RuntimeException(String.format(
+            throw new IncompleteExpenseUpdateException(String.format(
                     "Error al intentar actualizar el gasto con ID: %d%n. Debe proporcionar al menos una nueva descripción o un nuevo monto.",
                     id));
         }
@@ -37,13 +40,13 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
         List<Expense> expenses = expenseWrapper.getExpenses();
 
         if (expenses == null || expenses.isEmpty()) {
-            throw new RuntimeException("No se encontraron gastos registrados para actualizar.");
+            throw new ExpenseNotFoundException("No se encontraron gastos registrados para actualizar.");
         }
 
         Expense expense = expenses.stream()
                 .filter(ex -> ex.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException(String.format(
+                .orElseThrow(() -> new ExpenseNotFoundException(String.format(
                         "No se encontró un gasto con ID: %d%n. Verifique que el ID sea correcto y que el gasto exista.",
                         id)));
 
@@ -60,13 +63,13 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
         List<Expense> expenses = expenseWrapper.getExpenses();
 
         if (expenses == null || expenses.isEmpty()) {
-            throw new RuntimeException("No se encontraron gastos registrados para eliminar.");
+            throw new ExpenseNotFoundException("No se encontraron gastos registrados para eliminar.");
         }
 
         Expense expense = expenses.stream()
                 .filter(ex -> ex.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException(String.format(
+                .orElseThrow(() -> new ExpenseNotFoundException(String.format(
                         "No se encontró un gasto con ID: %d%n. Verifique que el ID sea correcto y que el gasto exista.",
                         id)));
 
@@ -80,7 +83,7 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
         List<Expense> expenses = expenseWrapper.getExpenses();
 
         if (expenses == null || expenses.isEmpty()) {
-            throw new RuntimeException("No se encontraron gastos registrados para eliminar.");
+            throw new ExpenseNotFoundException("No se encontraron gastos registrados para eliminar.");
         }
 
         return expenses;
@@ -92,7 +95,7 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
         List<Expense> expenses = expenseWrapper.getExpenses();
 
         if (expenses == null || expenses.isEmpty()) {
-            throw new RuntimeException("No se encontraron gastos registrados para eliminar.");
+            throw new ExpenseNotFoundException("No se encontraron gastos registrados para eliminar.");
         }
 
         LocalDateTime currentDate = LocalDateTime.now();
@@ -117,11 +120,11 @@ public class ExpenseTrackerServiceImpl implements ExpenseTrackerService {
         List<Expense> expenses = expenseWrapper.getExpenses();
 
         if (expenses == null || expenses.isEmpty()) {
-            throw new RuntimeException("No se encontraron gastos registrados para eliminar.");
+            throw new ExpenseNotFoundException("No se encontraron gastos registrados para eliminar.");
         }
 
         if (month < 1 || month > 12) {
-            throw new RuntimeException("El mes debe estar entre 1 y 12.");
+            throw new InvalidMonthException("El mes debe estar entre 1 y 12.");
         }
 
         LocalDateTime currentDate = LocalDateTime.now();
