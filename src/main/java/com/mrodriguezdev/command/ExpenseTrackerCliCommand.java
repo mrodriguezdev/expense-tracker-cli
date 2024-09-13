@@ -1,7 +1,13 @@
 package com.mrodriguezdev.command;
 
+import com.github.lalyos.jfiglet.FigletFont;
 import com.mrodriguezdev.command.sub.*;
+import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
+
+import java.io.IOException;
+
+import static org.fusesource.jansi.Ansi.ansi;
 
 @CommandLine.Command(
         name = "expense-tracker-cli",
@@ -25,6 +31,9 @@ import picocli.CommandLine;
         }
 )
 public class ExpenseTrackerCliCommand implements Runnable {
+    private static final String GREEN_TEXT = ansi().fgGreen().toString();
+    private static final String RESET_TEXT = ansi().reset().toString();
+
     public static void main(String[] args) {
         int status = new CommandLine(new ExpenseTrackerCliCommand())
                 .execute(args);
@@ -33,14 +42,29 @@ public class ExpenseTrackerCliCommand implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("[expense-tracker-cli] Bienvenido a Expense Tracker CLI.");
-        System.out.println("Esta herramienta te permite gestionar y hacer un seguimiento de tus gastos de manera eficiente.");
-        System.out.println("Utiliza los siguientes subcomandos para empezar:");
-        System.out.println("  - add   : Añade un nuevo gasto.");
-        System.out.println("  - update: Actualiza un gasto existente.");
-        System.out.println("  - delete: Elimina un gasto.");
-        System.out.println("  - list  : Lista todos los gastos.");
-        System.out.println("  - summary: Muestra un resumen de tus gastos.");
-        System.out.println("Para obtener más información sobre cada comando, utiliza la opción '-h' o '--help'.");
+        AnsiConsole.systemInstall();
+        try {
+            String banner = FigletFont.convertOneLine("Expense Tracker CLI");
+            System.out.println(GREEN_TEXT + banner + RESET_TEXT);
+        } catch (IOException e) {
+            System.err.println("Error al generar el banner. Por favor, revisa tu configuración.");
+            e.printStackTrace();
+            return;
+        } finally {
+            AnsiConsole.systemUninstall();
+        }
+
+        StringBuilder message = new StringBuilder();
+        message.append("\n[expense-tracker-cli] Bienvenido a Expense Tracker CLI.\n\n")
+                .append("Esta herramienta te permite gestionar y hacer un seguimiento de tus gastos de manera eficiente.\n\n")
+                .append(GREEN_TEXT).append("Utiliza los siguientes subcomandos para empezar:\n\n").append(RESET_TEXT)
+                .append("  - ").append(GREEN_TEXT).append("add").append(RESET_TEXT).append("    : Añade un nuevo gasto.\n")
+                .append("  - ").append(GREEN_TEXT).append("update").append(RESET_TEXT).append(" : Actualiza un gasto existente.\n")
+                .append("  - ").append(GREEN_TEXT).append("delete").append(RESET_TEXT).append(" : Elimina un gasto.\n")
+                .append("  - ").append(GREEN_TEXT).append("list").append(RESET_TEXT).append("   : Lista todos los gastos.\n")
+                .append("  - ").append(GREEN_TEXT).append("summary").append(RESET_TEXT).append(": Muestra un resumen de tus gastos.\n\n")
+                .append("Para obtener más información sobre cada comando, utiliza la opción '-h' o '--help'.\n");
+
+        System.out.println(message);
     }
 }
