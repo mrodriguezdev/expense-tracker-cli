@@ -5,6 +5,8 @@ Permite agregar, actualizar, eliminar, ver y exportar gastos en formato CSV. Ade
 
 El proyecto está basado en una propuesta de [Roadmap.sh.](https://roadmap.sh/projects/expense-tracker)
 
+![Expense Tracker Cli](./public/expense-tracker-cli.png)
+
 <div id="indice" >
 
 ## **Índice**
