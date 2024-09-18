@@ -20,6 +20,14 @@ public class Expense {
         this.registeredAt = registeredAt;
     }
 
+    public Expense(Long id, String description, Double amount, LocalDateTime registeredAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.description = description;
+        this.amount = amount;
+        this.registeredAt = registeredAt;
+        this.updatedAt = updatedAt;
+    }
+
     public Long getId() {
         return id;
     }

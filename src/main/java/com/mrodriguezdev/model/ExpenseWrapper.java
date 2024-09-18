@@ -10,6 +10,11 @@ public class ExpenseWrapper {
         this.expenses = new ArrayList<>();
     }
 
+    public ExpenseWrapper add(Expense expense) {
+        this.expenses.add(expense);
+        return this;
+    }
+
     public List<Expense> getExpenses() {
         return expenses;
     }
