@@ -1,8 +1,8 @@
 package com.mrodriguezdev.service;
 
+import com.mrodriguezdev.exception.IncompleteExpenseUpdateException;
 import com.mrodriguezdev.model.Expense;
-import com.mrodriguezdev.model.ExpenseWrapper;
-import com.mrodriguezdev.repository.Repository;
+import com.mrodriguezdev.repository.ExpenseRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,29 +15,31 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ExpenseTrackerServiceImplTest {
     @Mock
-    Repository<ExpenseWrapper> repository;
+    ExpenseRepository repository;
     @InjectMocks
     ExpenseTrackerServiceImpl service;
 
     @Test
     void add() {
-        when(repository.generateNewId()).thenReturn(9L);
-        when(repository.loadExpenses()).thenReturn(Data.EXPENSE_WRAPPER);
-        doNothing().when(repository).saveExpenses(Data.EXPENSE_WRAPPER);
-        doNothing().when(repository).saveNewId(9L);
+        when(repository.save("Libro", 15.00)).thenReturn(Data.NEW_EXPENSE);
 
         Expense expense = service.add("Libro", 15.00);
 
         assertNotNull(expense);
+        assertNotNull(expense.getId());
         assertEquals(9L, expense.getId());
         assertEquals("Libro", expense.getDescription());
         assertEquals(15.00, expense.getAmount());
         assertNotNull(expense.getRegisteredAt());
         assertNull(expense.getUpdatedAt());
-        verify(repository).generateNewId();
-        verify(repository).loadExpenses();
-        verify(repository).saveExpenses(Data.EXPENSE_WRAPPER);
-        verify(repository).saveNewId(9L);
+        verify(repository).save("Libro", 15.00);
+    }
+
+    @Test
+    void addIncomplete() {
+        IncompleteExpenseUpdateException ieue = assertThrows(IncompleteExpenseUpdateException.class, () -> this.service.add(null, 15.00));
+        assertTrue(ieue.getMessage().contains("Error al intentar guardar el gasto"));
+        verify(repository, never()).save(null, 15.00);
     }
 
 
