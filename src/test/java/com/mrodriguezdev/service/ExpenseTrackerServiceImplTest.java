@@ -38,13 +38,23 @@ class ExpenseTrackerServiceImplTest {
     @Test
     void addIncomplete() {
         MissingExpenseFieldException e = assertThrows(MissingExpenseFieldException.class, () -> this.service.add(null, 15.00));
-        assertTrue(e.getMessage().contains("Error al intentar guardar el gasto"));
+        assertTrue(e.getMessage().contains("Por favor, completa estos campos antes de intentar nuevamente."));
         verify(repository, never()).save(null, 15.00);
     }
 
-
     @Test
     void update() {
+        long expenseId = 10L;
+        when(repository.findById(expenseId)).thenReturn(Data.UPDATED_EXPENSE);
+
+        service.update(expenseId, "Cena en restaurante", 60.0);
+
+        verify(repository).update(argThat(expense ->
+                expense.getDescription().equals("Cena en restaurante") &&
+                        expense.getAmount().compareTo(60.0) == 0
+        ));
+
+        verify(repository).findById(expenseId);
     }
 
     @Test
