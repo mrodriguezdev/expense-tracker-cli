@@ -1,6 +1,6 @@
 package com.mrodriguezdev.repository;
 
-import com.mrodriguezdev.exception.ExpenseNotFoundException;
+import com.mrodriguezdev.exception.ExpenseIdNotFoundException;
 import com.mrodriguezdev.model.Expense;
 import com.mrodriguezdev.model.ExpenseWrapper;
 
@@ -40,7 +40,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
         List<Expense> expenses = expenseWrapper.getExpenses();
 
         if (expenses.isEmpty()) {
-            throw new ExpenseNotFoundException("No se encontraron gastos registrados.");
+            throw new ExpenseIdNotFoundException("No se encontraron gastos registrados.");
         }
 
         return expenses.stream()

@@ -1,6 +1,6 @@
 package com.mrodriguezdev.service;
 
-import com.mrodriguezdev.exception.IncompleteExpenseUpdateException;
+import com.mrodriguezdev.exception.MissingExpenseFieldException;
 import com.mrodriguezdev.model.Expense;
 import com.mrodriguezdev.repository.ExpenseRepository;
 import org.junit.jupiter.api.Test;
@@ -37,8 +37,8 @@ class ExpenseTrackerServiceImplTest {
 
     @Test
     void addIncomplete() {
-        IncompleteExpenseUpdateException ieue = assertThrows(IncompleteExpenseUpdateException.class, () -> this.service.add(null, 15.00));
-        assertTrue(ieue.getMessage().contains("Error al intentar guardar el gasto"));
+        MissingExpenseFieldException e = assertThrows(MissingExpenseFieldException.class, () -> this.service.add(null, 15.00));
+        assertTrue(e.getMessage().contains("Error al intentar guardar el gasto"));
         verify(repository, never()).save(null, 15.00);
     }
 
