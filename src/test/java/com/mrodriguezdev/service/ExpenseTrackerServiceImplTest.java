@@ -2,6 +2,7 @@ package com.mrodriguezdev.service;
 
 import com.mrodriguezdev.exception.ExpenseIdNotFoundException;
 import com.mrodriguezdev.exception.MissingExpenseFieldException;
+import com.mrodriguezdev.exception.MonthOutOfRangeException;
 import com.mrodriguezdev.exception.NoExpensesFoundException;
 import com.mrodriguezdev.model.Expense;
 import com.mrodriguezdev.repository.ExpenseRepository;
@@ -110,6 +111,8 @@ class ExpenseTrackerServiceImplTest {
         assertNotNull(expenses);
         assertFalse(expenses.isEmpty());
         assertEquals(Data.EXPENSES.size(), expenses.size());
+
+        verify(repository).listAll();
     }
 
     @Test
@@ -121,14 +124,42 @@ class ExpenseTrackerServiceImplTest {
     }
 
     @Test
-    void summary() {
+    void testSummary() {
+        when(repository.listAll()).thenReturn(Data.EXPENSES);
+
+        double summary = this.service.summary(false);
+        double expectedSummary = Data.EXPENSES.stream()
+                .mapToDouble(Expense::getAmount)
+                .sum();
+
+        assertNotEquals(0, summary);
+        assertEquals(expectedSummary, summary, 0.001);
+
+        verify(repository).listAll();
     }
 
     @Test
-    void summaryOf() {
+    void testSummaryOf() {
+        when(repository.listAll()).thenReturn(Data.EXPENSES);
+
+        double summary = this.service.summaryOf(false, 2);
+        double expectedSummary = Data.EXPENSES.stream()
+                .filter(expense -> expense.getRegisteredAt().getMonthValue() == 2)
+                .mapToDouble(Expense::getAmount)
+                .sum();
+
+        assertNotEquals(0, summary);
+        assertEquals(expectedSummary, summary, 0.001);
+
+        verify(repository).listAll();
     }
 
     @Test
-    void exportToCsv() {
+    void testSummaryOfThrowsWhenMonthOutOfRange() {
+        MonthOutOfRangeException e = assertThrows(MonthOutOfRangeException.class, () -> this.service.summaryOf(false, 13));
+
+        assertTrue(e.getMessage().contains("El mes debe estar entre 1 y 12."));
+
+        verify(repository, never()).listAll();
     }
 }
