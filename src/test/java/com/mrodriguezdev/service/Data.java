@@ -1,7 +1,6 @@
 package com.mrodriguezdev.service;
 
 import com.mrodriguezdev.model.Expense;
-import com.mrodriguezdev.model.ExpenseWrapper;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -19,6 +18,6 @@ public class Data {
             new Expense(8L, "Gimnasio", 40.00, LocalDateTime.of(2024, 3, 5, 7, 30), LocalDateTime.of(2024, 3, 5, 7, 30))
     );
     public static final Expense NEW_EXPENSE = new Expense(9L, "Libro", 15.00, LocalDateTime.of(2024, 3, 8, 14, 30));
-    public static final Expense UPDATED_EXPENSE = new Expense(10L, "Cena en restaurante", 60.00, LocalDateTime.of(2024, 3, 10, 19, 0), LocalDateTime.of(2024, 3, 12, 19, 0));
-    public static final ExpenseWrapper EXPENSE_WRAPPER = new ExpenseWrapper().add(NEW_EXPENSE);
+    public static final Expense UPDATE_EXPENSE = new Expense(10L, "Cena en restaurante", 60.00, LocalDateTime.of(2024, 3, 10, 19, 0), LocalDateTime.of(2024, 3, 12, 19, 0));
+    public static final Expense DELETE_EXPENSE = new Expense(9L, "Libro", 15.00, LocalDateTime.of(2024, 3, 8, 14, 30));
 }
